@@ -9,96 +9,152 @@ app_file: app.py
 pinned: true
 ---
 
-# 🔬 MAST-Autofix
-**Autonomous Multi-Agent LLM Debugger**
+# 🔬 MAST-Autofix  
+### Autonomous Multi-Agent LLM Debugger
 
-> Multi-agent AI systems fail 41–86% of the time (MAST paper, 1,600+ annotated traces).  
-> Every existing tool tells you *what* failed. Nobody closes the loop.  
-> **MAST-Autofix diagnoses, patches, and proves the fix worked — without human intervention.**
-
----
-
-## What It Does
-
-MAST-Autofix is a **7-agent LangGraph pipeline** that:
-
-1. **Collects** execution traces from a broken LangGraph app
-2. **Detects** failure signals (exceptions, timeouts, contract violations)
-3. **Classifies** the failure using the MAST taxonomy (few-shot Claude prompting)
-4. **Critiques** the architecture — points to the exact broken node/edge
-5. **Patches** the code — generates a unified diff
-6. **Benchmarks** original vs patched graph on 15 tasks
-7. **Reports** a full Autopsy & Fix report with before/after metrics
+> Multi-agent AI systems fail **41–86% of the time** (MAST paper, 1,600+ annotated traces).  
+> Existing tools surface failures — **they don’t fix them**.  
+>  
+> **MAST-Autofix closes the loop: diagnose → patch → validate.**
 
 ---
 
-## The Gap It Fills
+## 🧠 Overview
 
-| Tool | Traces | Classifies Failure | Generates Patch | Proves Fix |
-|------|--------|-------------------|-----------------|------------|
-| LangSmith | ✅ | ❌ | ❌ | ❌ |
-| Langfuse | ✅ | ❌ | ❌ | ❌ |
-| AgentOps | ✅ | ❌ | ❌ | ❌ |
-| **MAST-Autofix** | ✅ | ✅ | ✅ | ✅ |
+MAST-Autofix is a **7-agent autonomous debugging system** built on LangGraph that:
 
----
-
-## MAST Failure Modes Implemented
-
-| Mode | Name | Signal |
-|------|------|--------|
-| FM-1.1 | Disobey Task Specification | Agent ignores part of compound task |
-| FM-2.3 | Conversation Reset | Agent loses context mid-run |
-| FM-3.2 | Incomplete Verification | Reviewer approves without checking |
+- Identifies failure patterns in agent workflows  
+- Classifies them using the **MAST failure taxonomy**  
+- Generates targeted patches (code-level fixes)  
+- Validates improvements via benchmarking  
+- Produces a complete **Autopsy & Fix Report**
 
 ---
 
-## Demo Results (15-task benchmark)
+## ⚙️ What It Does
 
-| Metric | Before Patch | After Patch | Delta |
-|--------|-------------|------------|-------|
-| Task Success Rate | 60% | 87% | **+27%** |
-| Avg Steps / Task | 15.2 | 9.1 | **-6.1** |
-| Avg Token Cost | 312 | 238 | **-23.7%** |
+The system executes a full debugging lifecycle:
+
+1. **Trace Collection**  
+   Captures execution traces from a failing LangGraph workflow  
+
+2. **Failure Detection**  
+   Identifies anomalies such as exceptions, timeouts, and contract violations  
+
+3. **Failure Classification**  
+   Uses few-shot prompting (Claude) to map failures to MAST taxonomy  
+
+4. **Design Critique**  
+   Pinpoints architectural weaknesses (node/edge-level issues)  
+
+5. **Patch Generation**  
+   Synthesizes a **unified diff** to fix the system  
+
+6. **Evaluation & Benchmarking**  
+   Compares original vs patched system across multiple tasks  
+
+7. **Reporting**  
+   Generates a structured **Autopsy Report** with metrics and explanations  
 
 ---
 
-## Tech Stack
+## 🧩 The Gap It Fills
 
-- **Orchestration:** LangGraph + LangChain
-- **LLM:** Claude Sonnet (Anthropic API) — classification + patch synthesis
-- **UI:** Gradio (3-panel: trace → diagnosis → diff + metrics)
-- **Deploy:** HuggingFace Spaces + Docker
-- **Tracing:** LangSmith
+| Tool        | Trace Analysis | Failure Classification | Patch Generation | Validation |
+|------------|---------------|----------------------|------------------|------------|
+| LangSmith  | ✅            | ❌                   | ❌               | ❌         |
+| Langfuse   | ✅            | ❌                   | ❌               | ❌         |
+| AgentOps   | ✅            | ❌                   | ❌               | ❌         |
+| **MAST-Autofix** | ✅     | ✅                   | ✅               | ✅         |
+
+> 🔥 Moves from *observability* → *autonomous debugging*
 
 ---
 
-## Local Setup
+## 🧠 Failure Modes Implemented
+
+| ID     | Failure Mode                  | Description |
+|--------|------------------------------|-------------|
+| FM-1.1 | Task Specification Failure   | Agent ignores parts of a compound task |
+| FM-2.3 | Context Loss / Reset         | Agent loses memory mid-execution |
+| FM-3.2 | Incomplete Verification      | Reviewer approves without validation |
+
+---
+
+## 📊 Benchmark Results (15 Tasks)
+
+| Metric              | Before | After | Improvement |
+|--------------------|--------|-------|-------------|
+| Task Success Rate  | 60%    | 87%   | **+27%**    |
+| Avg Steps / Task   | 15.2   | 9.1   | **-40%**    |
+| Avg Token Cost     | 312    | 238   | **-23.7%**  |
+
+---
+
+## 🏗️ System Architecture
+
+Broken LangGraph Application
+↓
+[1] Trace Collector → RunTrace
+[2] Failure Detector → FailureWindow
+[3] MAST Classifier → Classification (LLM-based)
+[4] Design Critic → Architecture Analysis
+[5] Patch Synthesizer → Code Diff (Fix)
+[6] Evaluator → Benchmark Results
+[7] Reporter → Autopsy Report
+
+
+---
+
+## 🛠️ Tech Stack
+
+- **Orchestration:** LangGraph, LangChain  
+- **LLM:** Claude Sonnet (Anthropic API)  
+- **UI:** Gradio (3-panel interactive interface)  
+- **Tracing:** LangSmith  
+- **Deployment:** Hugging Face Spaces, Docker  
+
+---
+
+## 🚀 Local Setup
 
 ```bash
 git clone https://github.com/yxshas565/mast-autofix
 cd mast-autofix
 pip install -r requirements.txt
-cp .env.example .env  # add your ANTHROPIC_API_KEY
+cp .env.example .env  # Add your ANTHROPIC_API_KEY
 python app.py
 ```
 
 ---
 
-## Architecture
+🧪 Key Capabilities
+- Autonomous failure diagnosis
+- Code-level patch generation
+- Structured evaluation and benchmarking
+- Explainable debugging via reports
+- Modular multi-agent orchestration
 
-```
-broken LangGraph app
-        ↓
-[Agent 1] Trace Collector  →  RunTrace
-[Agent 2] Failure Detector →  FailureWindow
-[Agent 3] MAST Classifier  →  MASTClassification  (Claude few-shot)
-[Agent 4] Design Critic    →  DesignCritique
-[Agent 5] Patch Synthesizer→  Patch (unified diff)
-[Agent 6] Evaluator        →  BenchmarkResult (before + after)
-[Agent 7] Reporter         →  AutopsyReport + Markdown
-```
 
 ---
 
-*Built for Orion Build Challenge 2026 — github.com/yxshas565*
+⚠️ Challenges
+- Mapping unstructured traces to structured failure taxonomy
+- Generating safe and minimal code patches
+- Designing reliable evaluation pipelines
+- Balancing autonomy with correctness guarantees
+
+---
+
+🔮 Future Work
+- Support for additional agent frameworks (CrewAI, AutoGen)
+- Continuous self-improving debugging loops
+- Production-grade monitoring + alerting
+- Integration with CI/CD pipelines
+
+---
+
+👨‍💻 Author
+
+Yashas Sadananda
+Built for Orion Build Challenge 2026
